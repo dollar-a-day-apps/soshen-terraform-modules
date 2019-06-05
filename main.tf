@@ -76,8 +76,8 @@ resource "aws_security_group_rule" "load_balancer_cidr_blocks" {
   from_port         = var.cidr_block_security_groups[count.index].from_port
   to_port           = var.cidr_block_security_groups[count.index].to_port
   protocol          = var.cidr_block_security_groups[count.index].protocol
-  cidr_blocks       = var.cidr_block_security_groups[count.index].cidr_blocks
-  ipv6_cidr_blocks  = var.cidr_block_security_groups[count.index].ipv6_cidr_blocks
+  cidr_blocks       = [var.cidr_block_security_groups[count.index].cidr_block]
+  ipv6_cidr_blocks  = [var.cidr_block_security_groups[count.index].ipv6_cidr_block]
   security_group_id = aws_security_group.load_balancer.id
 }
 

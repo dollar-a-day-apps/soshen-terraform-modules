@@ -35,7 +35,7 @@ variable "listener" {
 
 variable "cidr_block_security_groups" {
   type        = list(map(any))
-  description = "Security groups for CIDR blocks. Accept these props: from_port, to_port, protocol, cidr_blocks, ipv6_cidr_blocks"
+  description = "Security groups for CIDR blocks. Accept these props: from_port, to_port, protocol, cidr_block, ipv6_cidr_block"
   default     = []
 }
 
