@@ -22,9 +22,11 @@ resource "aws_route53_record" "soshen" {
   name    = var.route53_records[count.index].name
 
   alias {
+    # Not all resources can support this
     evaluate_target_health = var.route53_records[count.index].alias_evaluate_target_health
 
-    # Accessing node.soshen.io via a browser will send the visitor to our load balancer
+    # Details for an AWS resource that can be aliased
+    # For example, having all nodes.soshen.io requests go to the soshen-node-server load balancer
     zone_id = var.route53_records[count.index].alias_zone_id
     name    = var.route53_records[count.index].alias_name
   }
