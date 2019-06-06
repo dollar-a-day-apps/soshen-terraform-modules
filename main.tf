@@ -17,7 +17,7 @@ data "aws_route53_zone" "soshen" {
 # Allows us to create records (rules) for routing domain traffic
 resource "aws_route53_record" "soshen" {
   count   = length(var.route53_records)
-  zone_id = data.aws_route53_zone.soshen.host_id
+  zone_id = data.aws_route53_zone.soshen.zone_id
   type    = var.route53_records[count.index].type
   name    = var.route53_records[count.index].name
 
