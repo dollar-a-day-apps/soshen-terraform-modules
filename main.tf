@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "container" {
   family                   = var.ecs_task_definition.family
   task_role_arn            = var.ecs_task_definition.task_role_arn
   execution_role_arn       = var.ecs_task_definition.execution_role_arn
-  container_definitions    = [module.container_definition.json]
+  container_definitions    = jsonencode(module.container_definition.json)
 
   tags = {
     Name        = var.resource_name_tag
