@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "scale_up" {
   # Specifies what instance we are applying the alarm config to
   dimensions = {
     ClusterName = var.ecs_cluster_name
-    ServiceName = var.ecs_cluster_service_name
+    ServiceName = var.ecs_service_name
   }
 
   # Provisions a new ECS task instance when above parameters are met
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_metric_alarm" "scale_down" {
 
   dimensions = {
     ClusterName = var.ecs_cluster_name
-    ServiceName = var.ecs_cluster_service_name
+    ServiceName = var.ecs_service_name
   }
 
   # Derovisions a new ECS task instance when above parameters are met
