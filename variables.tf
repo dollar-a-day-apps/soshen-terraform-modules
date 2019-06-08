@@ -10,7 +10,7 @@ variable "ecs_service" {
 
 variable "container_security_group" {
   type        = map(string)
-  description = "Security group of the ECS service which manages task container instances. Accepts the following props: from_port, to_port, load_balancer_security_group_id"
+  description = "Security group of the ECS service which manages task container instances. Accepts the following props: ingress_from_port, ingress_to_port, ingress_security_group_id"
 }
 
 variable "ecs_task_definition" {

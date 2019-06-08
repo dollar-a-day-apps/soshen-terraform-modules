@@ -52,9 +52,9 @@ resource "aws_security_group" "container" {
   # HTTPS
   ingress {
     protocol        = "tcp"
-    from_port       = var.container_security_group.from_port
-    to_port         = var.container_security_group.to_port
-    security_groups = [var.container_security_group.load_balancer_security_group_id]
+    from_port       = var.container_security_group.ingress_from_port
+    to_port         = var.container_security_group.ingress_to_port
+    security_groups = [var.container_security_group.ingress_security_group_id]
   }
 
   # Enable all outgoing
