@@ -31,7 +31,7 @@ resource "aws_ecs_service" "container" {
   network_configuration {
     assign_public_ip = true
     security_groups  = [aws_security_group.container.id]
-    subnets          = var.ecs_service.public_subnet_ids
+    subnets          = var.public_subnet_ids
   }
 
   # Due to autoscaling, the number of running instances may change so we want to ignore it in TF
