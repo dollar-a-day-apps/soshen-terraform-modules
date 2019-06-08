@@ -13,9 +13,9 @@ variable "ecs_cluster_name" {
   description = "Name of the ECS cluster"
 }
 
-variable "ecs_cluster_service_name" {
+variable "ecs_service_name" {
   type        = string
-  description = "Name of the ECS cluster service"
+  description = "Name of the ECS service"
 }
 
 variable "scale_up_policy_name" {
