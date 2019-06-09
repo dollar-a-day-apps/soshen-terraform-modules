@@ -3,7 +3,12 @@
 
 # AWS ECS - Cluster
 resource "aws_ecs_cluster" "container" {
-  name = var.ecs_cluster_name
+  name = "${var.ecs_cluster_name}"
+
+  # There is no real reason to ever destroy an ECS cluster since it doesn't do anything
+  lifecycle {
+    prevent_destroy = true
+  }
 
   tags = {
     Name        = var.resource_name_tag
@@ -18,7 +23,7 @@ resource "aws_ecs_service" "container" {
   launch_type      = "FARGATE"
   cluster          = aws_ecs_cluster.container.arn
   task_definition  = aws_ecs_task_definition.container.arn
-  name             = var.ecs_service.name
+  name             = "${var.ecs_service.name}"
 
   # Distribute traffic via an AWS ALB (Application Load Balancer)
   load_balancer {
@@ -36,7 +41,7 @@ resource "aws_ecs_service" "container" {
 
   # Due to autoscaling, the number of running instances may change so we want to ignore it in TF
   lifecycle {
-    create_before_destroy = true
+    prevent_destroy       = true
     ignore_changes        = ["desired_count"]
   }
 
@@ -66,6 +71,10 @@ resource "aws_security_group" "container" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   tags = {
     Name        = var.resource_name_tag
     Environment = var.resource_environment_tag
@@ -81,6 +90,10 @@ resource "aws_ecs_task_definition" "container" {
   task_role_arn            = var.ecs_task_definition.task_role_arn
   execution_role_arn       = var.ecs_task_definition.execution_role_arn
   container_definitions    = module.container_definition.json
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = {
     Name        = var.resource_name_tag
