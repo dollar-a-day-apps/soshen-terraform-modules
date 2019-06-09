@@ -32,8 +32,13 @@ variable "container_definition" {
 }
 
 variable "container_definition_env" {
-  type        = map(string)
-  description = "Environment variables that our application needs in order to function. Accepts the following props: NODE_ENV, REDIS_HOST, REDIS_PORT, DB_NAME, DB_HOST, DB_PORT, CARDANO_IMPORTER_URL, CARDANO_BACKEND_URL, DASHBOARD_SERVER_URL, SENTRY_DSN, SENTRY_ENVIRONMENT, DB_USER_SSM_ARN, DB_PASS_SSM_ARN, STRIPE_SECRET_KEY_SSM_ARN"
+  type        = list(map(string))
+  description = "Environment variables that our application needs in order to function."
+}
+
+variable "container_definition_secrets" {
+  type        = list(map(string))
+  description = "Sensitive environment variables that our application needs in order to function. Values should be SSM ARNs"
 }
 
 variable "resource_name_tag" {

@@ -107,6 +107,8 @@ module "container_definition" {
   source          = "./container_definition/"
   container_name  = var.container_definition.container_name
   container_image = var.container_definition.container_image
+  environment = var.container_definition_env
+  secrets = var.container_definition_secrets
 
   port_mappings = [{
     protocol      = "tcp"
@@ -119,66 +121,4 @@ module "container_definition" {
     awslogs-region        = var.container_definition.awslogs_region
     awslogs-group         = var.container_definition.awslogs_group
   }
-
-  environment = [
-    {
-      name  = "NODE_ENV"
-      value = var.container_definition_env.NODE_ENV
-    },
-    {
-      name  = "REDIS_HOST"
-      value = var.container_definition_env.REDIS_HOST
-    },
-    {
-      name  = "REDIS_PORT"
-      value = var.container_definition_env.REDIS_PORT
-    },
-    {
-      name  = "DB_NAME"
-      value = var.container_definition_env.DB_NAME
-    },
-    {
-      name  = "DB_HOST"
-      value = var.container_definition_env.DB_HOST
-    },
-    {
-      name  = "DB_PORT"
-      value = var.container_definition_env.DB_PORT
-    },
-    {
-      name  = "CARDANO_IMPORTER_URL"
-      value = var.container_definition_env.CARDANO_IMPORTER_URL
-    },
-    {
-      name  = "CARDANO_BACKEND_URL"
-      value = var.container_definition_env.CARDANO_BACKEND_URL
-    },
-    {
-      name  = "DASHBOARD_SERVER_URL"
-      value = var.container_definition_env.DASHBOARD_SERVER_URL
-    },
-    {
-      name  = "SENTRY_DSN"
-      value = var.container_definition_env.SENTRY_DSN
-    },
-    {
-      name  = "SENTRY_ENVIRONMENT"
-      value = var.container_definition_env.SENTRY_ENVIRONMENT
-    },
-  ]
-
-  secrets = [
-    {
-      name      = "DB_USER"
-      valueFrom = var.container_definition_env.DB_USER_SSM_ARN
-    },
-    {
-      name      = "DB_PASS"
-      valueFrom = var.container_definition_env.DB_PASS_SSM_ARN
-    },
-    {
-      name      = "STRIPE_SECRET_KEY"
-      valueFrom = var.container_definition_env.STRIPE_SECRET_KEY_SSM_ARN
-    },
-  ]
 }
