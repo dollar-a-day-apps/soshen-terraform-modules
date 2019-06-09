@@ -3,7 +3,7 @@
 
 # AWS ECS - Cluster
 resource "aws_ecs_cluster" "container" {
-  name = "${var.ecs_cluster_name}"
+  name = var.ecs_cluster_name
 
   # There is no real reason to ever destroy an ECS cluster since it doesn't do anything
   lifecycle {
@@ -11,8 +11,9 @@ resource "aws_ecs_cluster" "container" {
   }
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = var.tags.Description
   }
 }
 
@@ -23,7 +24,7 @@ resource "aws_ecs_service" "container" {
   launch_type      = "FARGATE"
   cluster          = aws_ecs_cluster.container.arn
   task_definition  = aws_ecs_task_definition.container.arn
-  name             = "${var.ecs_service.name}"
+  name             = var.ecs_service.name
 
   # Distribute traffic via an AWS ALB (Application Load Balancer)
   load_balancer {
@@ -35,49 +36,52 @@ resource "aws_ecs_service" "container" {
   # Automatically assigns a public IP to our running tasks
   network_configuration {
     assign_public_ip = true
-    security_groups  = [aws_security_group.container.id]
-    subnets          = var.public_subnet_ids
+    security_groups = [aws_security_group.container.id]
+    subnets         = var.public_subnet_ids
   }
 
   # Due to autoscaling, the number of running instances may change so we want to ignore it in TF
   lifecycle {
-    prevent_destroy       = true
-    ignore_changes        = ["desired_count"]
+    prevent_destroy = true
+    ignore_changes  = [desired_count]
   }
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = var.tags.Description
   }
 }
 
-resource "aws_security_group" "container" {
+module "security_group" {
+  source = "github.com/dollar-a-day-apps/soshen-terraform-modules?ref=security-group"
   vpc_id = var.vpc_id
 
-  # HTTPS
-  ingress {
-    protocol        = "tcp"
-    from_port       = var.container_security_group.ingress_from_port
-    to_port         = var.container_security_group.ingress_to_port
-    security_groups = [var.container_security_group.ingress_security_group_id]
-  }
+  cidr_block_security_group_rules = [
+    {
+      type            = "egress"
+      protocol        = "tcp"
+      from_port       = 0
+      to_port         = 65535
+      cidr_block      = "0.0.0.0/0"
+      ipv6_cidr_block = "::/0"
+    },
+  ]
 
-  # Enable all outgoing
-  egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  source_security_group_rules = [
+    {
+      type                     = "ingress"
+      protocol                 = "tcp"
+      from_port                = var.container_security_group.ingress_from_port
+      to_port                  = var.container_security_group.ingress_to_port
+      source_security_group_id = var.container_security_group.ingress_security_group_id
+    },
+  ]
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = var.tags.Description
   }
 }
 
@@ -96,8 +100,9 @@ resource "aws_ecs_task_definition" "container" {
   }
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = var.tags.Description
   }
 }
 
@@ -107,14 +112,16 @@ module "container_definition" {
   source          = "./container_definition/"
   container_name  = var.container_definition.container_name
   container_image = var.container_definition.container_image
-  environment = var.container_definition_env
-  secrets = var.container_definition_secrets
+  environment     = var.container_definition_env
+  secrets         = var.container_definition_secrets
 
-  port_mappings = [{
-    protocol      = "tcp"
-    containerPort = var.container_definition.container_port
-    hostPort      = var.container_definition.host_port
-  }]
+  port_mappings = [
+    {
+      protocol      = "tcp"
+      containerPort = var.container_definition.container_port
+      hostPort      = var.container_definition.host_port
+    },
+  ]
 
   log_options = {
     awslogs-stream-prefix = "ecs"
@@ -122,3 +129,4 @@ module "container_definition" {
     awslogs-group         = var.container_definition.awslogs_group
   }
 }
+

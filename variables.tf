@@ -3,7 +3,7 @@ variable "vpc_id" {
 }
 
 variable "public_subnet_ids" {
-  type = list(string)
+  type = "list(string)"
 }
 
 variable "ecs_cluster_name" {
@@ -49,4 +49,9 @@ variable "resource_name_tag" {
 variable "resource_environment_tag" {
   type        = string
   description = "Name of ECS cluster"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Resource tags.  Accepts the following props: Name, Environment, Description"
 }
