@@ -3,7 +3,7 @@ variable "vpc_id" {
 }
 
 variable "public_subnet_ids" {
-  type = "list(string)"
+  type = list(string)
 }
 
 variable "ecs_cluster_name" {
@@ -39,16 +39,6 @@ variable "container_definition_env" {
 variable "container_definition_secrets" {
   type        = list(map(string))
   description = "Sensitive environment variables that our application needs in order to function. Values should be SSM ARNs"
-}
-
-variable "resource_name_tag" {
-  type        = string
-  description = "Name of ECS cluster"
-}
-
-variable "resource_environment_tag" {
-  type        = string
-  description = "Name of ECS cluster"
 }
 
 variable "tags" {
