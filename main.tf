@@ -13,7 +13,7 @@ resource "aws_ecs_cluster" "container" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = var.tags.Description
+    Description = "${var.tags.Description} ECS cluster"
   }
 }
 
@@ -49,7 +49,7 @@ resource "aws_ecs_service" "container" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = var.tags.Description
+    Description = "${var.tags.Description} ECS service"
   }
 }
 
@@ -81,7 +81,7 @@ module "security_group" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = var.tags.Description
+    Description = "${var.tags.Description} ECS security group"
   }
 }
 
@@ -102,7 +102,7 @@ resource "aws_ecs_task_definition" "container" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = var.tags.Description
+    Description = "${var.tags.Description} ECS task definition"
   }
 }
 
