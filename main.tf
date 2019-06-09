@@ -78,6 +78,10 @@ module "security_group" {
     },
   ]
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
