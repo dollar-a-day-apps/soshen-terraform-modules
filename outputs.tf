@@ -7,6 +7,6 @@ output "service_name" {
 }
 
 output "security_group_id" {
-  value = aws_security_group.container.id
+  value = module.security_group.id
 }
 
