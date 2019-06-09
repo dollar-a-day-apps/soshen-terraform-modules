@@ -20,7 +20,8 @@ resource "aws_security_group_rule" "cidr_block" {
   protocol                 = var.cidr_block_security_group_rules[count.index][protocol]
   from_port                = var.cidr_block_security_group_rules[count.index][from_port]
   to_port                  = var.cidr_block_security_group_rules[count.index][to_port]
-  source_security_group_id = var.cidr_block_security_group_rules[count.index][ipv6_cidr_block]
+  cidr_blocks = [var.cidr_block_security_group_rules[count.index][cidr_block]]
+  ipv6_cidr_blocks = [var.cidr_block_security_group_rules[count.index][ipv6_cidr_block]]
 
   lifecycle {
     create_before_destroy = true
