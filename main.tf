@@ -36,7 +36,7 @@ resource "aws_ecs_service" "container" {
   # Automatically assigns a public IP to our running tasks
   network_configuration {
     assign_public_ip = true
-    security_groups = [aws_security_group.container.id]
+    security_groups = [module.security_group.id]
     subnets         = var.public_subnet_ids
   }
 
