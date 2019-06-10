@@ -4,8 +4,8 @@ resource "aws_lb" "load_balancer" {
   internal           = false
   load_balancer_type = "application"
   subnets            = var.public_subnet_ids
-  security_groups    = [aws_security_group.load_balancer.id]
-  idle_timeout       = 300
+  security_groups = [module.security_group.id]
+  idle_timeout    = 300
 
   access_logs {
     enabled = true
@@ -17,14 +17,15 @@ resource "aws_lb" "load_balancer" {
   }
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = "${var.tags.Description} application load balancer"
   }
 }
 
 # Target group to forward incoming requests to
 resource "aws_lb_target_group" "load_balancer" {
-  depends_on  = ["aws_lb.load_balancer"]
+  depends_on  = [aws_lb.load_balancer]
   target_type = "ip"
   vpc_id      = var.vpc_id
   port        = var.target_group.port
@@ -48,8 +49,9 @@ resource "aws_lb_target_group" "load_balancer" {
   }
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = "${var.tags.Description} application load balancer"
   }
 }
 
@@ -71,47 +73,16 @@ resource "aws_lb_listener" "load_balancer" {
   }
 }
 
-# Controls incoming and outgoing requests for associated instances
-resource "aws_security_group" "load_balancer" {
-  vpc_id = var.vpc_id
-
-  lifecycle {
-    create_before_destroy = true
-  }
+module "security_group" {
+  source                          = "github.com/dollar-a-day-apps/soshen-terraform-modules?ref=security-group"
+  vpc_id                          = var.vpc_id
+  cidr_block_security_group_rules = var.cidr_block_security_groups
+  source_security_group_rules     = var.source_security_groups
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = "${var.tags.Description} application load balancer"
   }
 }
 
-# Creates security group rules if there are items in the cidr_block_security group list
-resource "aws_security_group_rule" "load_balancer_cidr_blocks" {
-  count             = length(var.cidr_block_security_groups)
-  type              = var.cidr_block_security_groups[count.index].type
-  from_port         = var.cidr_block_security_groups[count.index].from_port
-  to_port           = var.cidr_block_security_groups[count.index].to_port
-  protocol          = var.cidr_block_security_groups[count.index].protocol
-  cidr_blocks       = [var.cidr_block_security_groups[count.index].cidr_block]
-  ipv6_cidr_blocks  = [var.cidr_block_security_groups[count.index].ipv6_cidr_block]
-  security_group_id = aws_security_group.load_balancer.id
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# Creates security group rules if there are items in the source_security group list
-resource "aws_security_group_rule" "load_balancer_source_security_group_ids" {
-  count                    = length(var.source_security_groups)
-  type                     = var.source_security_groups[count.index].type
-  from_port                = var.source_security_groups[count.index].from_port
-  to_port                  = var.source_security_groups[count.index].to_port
-  protocol                 = var.source_security_groups[count.index].protocol
-  source_security_group_id = var.source_security_groups[count.index].source_security_group_id
-  security_group_id        = aws_security_group.load_balancer.id
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}

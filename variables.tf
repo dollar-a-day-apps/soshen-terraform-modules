@@ -13,14 +13,9 @@ variable "vpc_id" {
   description = "Remote state"
 }
 
-variable "resource_name_tag" {
-  type        = string
-  description = "Resource Name tag"
-}
-
-variable "resource_environment_tag" {
-  type        = string
-  description = "Resource Environment tag"
+variable "tags" {
+  type        = map(string)
+  description = "Resource tags. Accepts the following props: Name, Environment, Description"
 }
 
 variable "target_group" {
@@ -44,3 +39,4 @@ variable "source_security_groups" {
   description = "Security groups for source security group ids. Accept these props: type, from_port, to_port, protocol, source_security_group_id"
   default     = []
 }
+
