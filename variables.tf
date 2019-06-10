@@ -1,6 +1,6 @@
 variable "redis" {
   type = map(string)
-  description = "Redis Elasticache cluster and replication group configuration values. Accepts the following props: id, subnet_group_name, availability_zones, description, node_type, number_cache_clusters"
+  description = "Redis Elasticache cluster and replication group configuration values. Accepts the following props: id, subnet_group_name, availability_zones, description, node_type, replicas_per_node_group, num_node_groups"
 }
 
 variable "vpc_id" {

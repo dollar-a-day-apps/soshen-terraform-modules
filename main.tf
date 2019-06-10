@@ -27,13 +27,12 @@ resource "aws_elasticache_replication_group" "redis" {
   automatic_failover_enabled    = true
   port                          = 6379
   engine                        = "redis"
-  engine_version                = "5.0.3"
-  parameter_group_name          = "default.redis5.0"
+  engine_version                = "5.0.4"
+  parameter_group_name          = "default.redis5.0.cluster.on"
   availability_zones            = var.redis.availability_zones
   replication_group_id          = var.redis.id
   replication_group_description = var.redis.description
   node_type                     = var.redis.node_type
-  number_cache_clusters         = var.redis.number_cache_clusters
   subnet_group_name             = var.redis.subnet_group_name
   security_group_ids            = [aws_security_group.redis.id]
 
@@ -41,6 +40,11 @@ resource "aws_elasticache_replication_group" "redis" {
   snapshot_name            = var.redis.id
   snapshot_window          = "sun:07:00-sun:10:00"
   snapshot_retention_limit = 14
+
+  cluster_mode {
+    replicas_per_node_group = var.redis.replicas_per_node_group
+    num_node_groups         = var.redis.num_node_groups
+  }
 
   lifecycle = {
     create_before_destroy = true
