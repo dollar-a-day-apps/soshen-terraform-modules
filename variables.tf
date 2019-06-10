@@ -3,11 +3,6 @@ variable "public_subnet_ids" {
   description = "Public subnet IDs"
 }
 
-variable "access_logs_bucket" {
-  type        = string
-  description = "Bucket used for storing access logs"
-}
-
 variable "vpc_id" {
   type        = string
   description = "Remote state"

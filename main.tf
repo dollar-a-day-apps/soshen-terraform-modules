@@ -9,7 +9,7 @@ resource "aws_lb" "load_balancer" {
 
   access_logs {
     enabled = true
-    bucket  = var.access_logs_bucket
+    bucket  = aws_s3_bucket.load_balancer.id
   }
 
   lifecycle {
@@ -89,26 +89,26 @@ module "security_group" {
 # LOAD BALANCER ACCESS LOGS
 
 # Provides us with the AWS account ID
-data "aws_caller_identity" "this" {}
+data "aws_caller_identity" "load_balancer" {}
 
 # Gets the AWS load balancer service account to enable logging for the S3 bucket
-data "aws_elb_service_account" "this" {}
+data "aws_elb_service_account" "load_balancer" {}
 
 # IAM policy which allows the load balancer to insert logs into the private S3 bucket
-data "aws_iam_policy_document" "logs" {
+data "aws_iam_policy_document" "load_balancer" {
   statement {
     effect    = "Allow"
     actions   = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::${aws_s3_bucket.logs.id}/AWSLogs/${data.aws_caller_identity.this.account_id}/*"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.load_balancer.id}/AWSLogs/${data.aws_caller_identity.load_balancer.account_id}/*"]
 
     principals {
       type        = "AWS"
-      identifiers = [data.aws_elb_service_account.this.arn]
+      identifiers = [data.aws_elb_service_account.load_balancer.arn]
     }
   }
 }
 
-resource "aws_s3_bucket" "logs" {
+resource "aws_s3_bucket" "load_balancer" {
   acl = "private"
 
   # Moves the log files to appropriate types of storage based on usage frequency to reduce cost
@@ -148,9 +148,9 @@ resource "aws_s3_bucket" "logs" {
   force_destroy = true
 }
 
-resource "aws_s3_bucket_policy" "logs" {
-  bucket = aws_s3_bucket.logs.id
-  policy = data.aws_iam_policy_document.logs.json
+resource "aws_s3_bucket_policy" "load_balancer" {
+  bucket = aws_s3_bucket.load_balancer.id
+  policy = data.aws_iam_policy_document.load_balancer.json
 
   lifecycle {
     create_before_destroy = true
