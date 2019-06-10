@@ -1,3 +1,8 @@
+variable "load_balancer_internal" {
+  type = bool
+  description = "Determines whether the load balancer is publicly accessible"
+}
+
 variable "public_subnet_ids" {
   type        = list(string)
   description = "Public subnet IDs"

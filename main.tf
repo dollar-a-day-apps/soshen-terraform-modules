@@ -1,7 +1,7 @@
 # Load Balancer
 # Distributes traffic evenly across our container tasks
 resource "aws_lb" "load_balancer" {
-  internal           = false
+  internal           = var.load_balancer_internal
   load_balancer_type = "application"
   subnets            = var.public_subnet_ids
   security_groups    = [module.security_group.id]
