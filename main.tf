@@ -17,7 +17,7 @@ resource "aws_elasticache_cluster" "redis" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = "${var.tags.Description} Redis elasticache cluster"
+    Description = "${var.tags.Description} Redis"
   }
 }
 
@@ -49,7 +49,7 @@ resource "aws_elasticache_replication_group" "redis" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = "${var.tags.Description} Redis replication group"
+    Description = "${var.tags.Description} Redis"
   }
 }
 
@@ -62,6 +62,6 @@ module "security_group" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = "${var.tags.Description} Redis security group"
+    Description = "${var.tags.Description} Redis"
   }
 }
