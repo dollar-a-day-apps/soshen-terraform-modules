@@ -4,8 +4,9 @@
 # Stores and manages CloudWatch logs
 resource "aws_cloudwatch_log_group" "log_group" {
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = "${var.tags.Description} ECS monitoring"
   }
 }
 
@@ -30,8 +31,9 @@ resource "aws_cloudwatch_metric_alarm" "scale_up" {
   alarm_actions = [var.scale_up_metric_alarm.alarm_action]
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = "${var.tags.Description} ECS monitoring"
   }
 }
 
@@ -54,7 +56,8 @@ resource "aws_cloudwatch_metric_alarm" "scale_down" {
   alarm_actions = [var.scale_down_metric_alarm.alarm_action]
 
   tags = {
-    Name        = var.resource_name_tag
-    Environment = var.resource_environment_tag
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = "${var.tags.Description} ECS monitoring"
   }
 }

@@ -1,13 +1,3 @@
-variable "resource_name_tag" {
-  type        = string
-  description = "Resource Name tag"
-}
-
-variable "resource_environment_tag" {
-  type        = string
-  description = "Resource Environment tag"
-}
-
 variable "ecs_cluster_name" {
   type = string
 }
@@ -24,4 +14,9 @@ variable "scale_up_metric_alarm" {
 variable "scale_down_metric_alarm" {
   type        = map(string)
   description = "Monitors our ECS instances and performs a scale down action when the parameters are met. Accepts these props: name, metric_name, threshold"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Resource tags. Accepts the following props: Name, Environment, Description"
 }
