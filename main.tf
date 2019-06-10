@@ -4,8 +4,8 @@ resource "aws_lb" "load_balancer" {
   internal           = false
   load_balancer_type = "application"
   subnets            = var.public_subnet_ids
-  security_groups = [module.security_group.id]
-  idle_timeout    = 300
+  security_groups    = [module.security_group.id]
+  idle_timeout       = 300
 
   access_logs {
     enabled = true
@@ -86,3 +86,73 @@ module "security_group" {
   }
 }
 
+# LOAD BALANCER ACCESS LOGS
+
+# Provides us with the AWS account ID
+data "aws_caller_identity" "this" {}
+
+# Gets the AWS load balancer service account to enable logging for the S3 bucket
+data "aws_elb_service_account" "this" {}
+
+# IAM policy which allows the load balancer to insert logs into the private S3 bucket
+data "aws_iam_policy_document" "logs" {
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:PutObject"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.logs.id}/AWSLogs/${data.aws_caller_identity.this.account_id}/*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_elb_service_account.this.arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket" "logs" {
+  acl = "private"
+
+  # Moves the log files to appropriate types of storage based on usage frequency to reduce cost
+  lifecycle_rule {
+    id      = "log"
+    enabled = true
+
+    prefix = "AWSLogs/"
+
+    tags = {
+      "rule"      = "log"
+      "autoclean" = "true"
+      Environment = var.tags.Environment
+    }
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+
+    transition {
+      days          = 60
+      storage_class = "GLACIER"
+    }
+
+    expiration {
+      days = 90
+    }
+  }
+
+  # Used to avoid deletion of critical resources
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  # Deletes the bucket even if it has contents
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_policy" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  policy = data.aws_iam_policy_document.logs.json
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}

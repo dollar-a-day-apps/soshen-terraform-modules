@@ -39,4 +39,3 @@ variable "source_security_groups" {
   description = "Security groups for source security group ids. Accept these props: type, from_port, to_port, protocol, source_security_group_id"
   default     = []
 }
-
