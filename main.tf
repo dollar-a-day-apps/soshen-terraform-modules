@@ -17,7 +17,7 @@ resource "aws_elasticache_cluster" "redis" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = var.tags.Description
+    Description = "${var.tags.Description} Redis elasticache cluster"
   }
 }
 
@@ -49,7 +49,19 @@ resource "aws_elasticache_replication_group" "redis" {
   tags = {
     Name        = var.tags.Name
     Environment = var.tags.Environment
-    Description = var.tags.Description
+    Description = "${var.tags.Description} Redis replication group"
   }
 }
 
+module "security_group" {
+  source                          = "github.com/dollar-a-day-apps/soshen-terraform-modules?ref=security-group"
+  vpc_id                          = var.vpc_id
+  cidr_block_security_group_rules = var.cidr_block_security_groups
+  source_security_group_rules     = var.source_security_groups
+
+  tags = {
+    Name        = var.tags.Name
+    Environment = var.tags.Environment
+    Description = "${var.tags.Description} Redis security group"
+  }
+}
