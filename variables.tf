@@ -13,7 +13,7 @@ variable "ecs_cluster_name" {
 
 variable "ecs_service" {
   type        = map(string)
-  description = "ECS service which manages task container instances. Accepts the following props: desired_count, name, container_port, container_name, target_group_arn"
+  description = "ECS service which manages task container instances. Accepts the following props: desired_count, name, container_port, container_name, target_group_arn, assign_public_ip"
 }
 
 variable "container_security_group" {

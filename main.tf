@@ -5,9 +5,8 @@
 resource "aws_ecs_cluster" "container" {
   name = var.ecs_cluster_name
 
-  # There is no real reason to ever destroy an ECS cluster since it doesn't do anything
   lifecycle {
-    prevent_destroy = true
+    create_before_destroy = true
   }
 
   tags = {
@@ -35,14 +34,14 @@ resource "aws_ecs_service" "container" {
 
   # Automatically assigns a public IP to our running tasks
   network_configuration {
-    assign_public_ip = true
+    assign_public_ip = var.ecs_service.assign_public_ip
     security_groups = [module.security_group.id]
     subnets         = var.public_subnet_ids
   }
 
   # Due to autoscaling, the number of running instances may change so we want to ignore it in TF
   lifecycle {
-    prevent_destroy = true
+    create_before_destroy = true
     ignore_changes  = [desired_count]
   }
 
