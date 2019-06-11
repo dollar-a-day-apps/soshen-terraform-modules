@@ -29,7 +29,7 @@ resource "aws_elasticache_replication_group" "redis" {
   engine                        = "redis"
   engine_version                = "5.0.4"
   parameter_group_name          = "default.redis5.0.cluster.on"
-  availability_zones            = var.redis.availability_zones
+  availability_zones            = var.availability_zones
   replication_group_id          = var.redis.id
   replication_group_description = var.redis.description
   node_type                     = var.redis.node_type
