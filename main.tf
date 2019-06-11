@@ -10,7 +10,7 @@ resource "aws_elasticache_cluster" "redis" {
   snapshot_window          = "sun:07:00-sun:10:00"
   snapshot_retention_limit = 14
 
-  lifecycle = {
+  lifecycle {
     create_before_destroy = true
   }
 
@@ -46,7 +46,7 @@ resource "aws_elasticache_replication_group" "redis" {
     num_node_groups         = var.redis.num_node_groups
   }
 
-  lifecycle = {
+  lifecycle {
     create_before_destroy = true
   }
 
