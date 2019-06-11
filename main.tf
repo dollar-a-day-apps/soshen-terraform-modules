@@ -38,7 +38,7 @@ resource "aws_elasticache_replication_group" "redis" {
 
   # Backups of our data which we can use to restore Redis clusters and nodes
   snapshot_name            = var.redis.id
-  snapshot_window          = "sun:07:00-sun:10:00"
+  snapshot_window          = "07:00-10:00"
   snapshot_retention_limit = 14
 
   cluster_mode {
