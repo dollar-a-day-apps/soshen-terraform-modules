@@ -7,7 +7,7 @@ resource "aws_elasticache_cluster" "redis" {
 
   # Backups of our data which we can use to restore instances
   snapshot_name            = var.redis.id
-  snapshot_window          = "sun:07:00-sun:10:00"
+  snapshot_window          = "07:00-10:00"
   snapshot_retention_limit = 14
 
   lifecycle {
