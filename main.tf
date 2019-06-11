@@ -2,8 +2,8 @@ resource "aws_elasticache_cluster" "redis" {
   apply_immediately    = true
   cluster_id           = var.redis.id
   subnet_group_name    = var.redis.subnet_group_name
-  replication_group_id = aws_elasticache_replication_group.id
-  security_group_ids   = [aws_security_group.redis.id]
+  replication_group_id = aws_elasticache_replication_group.redis.id
+  security_group_ids   = [module.security_group.id]
 
   # Backups of our data which we can use to restore instances
   snapshot_name            = var.redis.id
@@ -34,7 +34,7 @@ resource "aws_elasticache_replication_group" "redis" {
   replication_group_description = var.redis.description
   node_type                     = var.redis.node_type
   subnet_group_name             = var.redis.subnet_group_name
-  security_group_ids            = [aws_security_group.redis.id]
+  security_group_ids            = [module.security_group.id]
 
   # Backups of our data which we can use to restore Redis clusters and nodes
   snapshot_name            = var.redis.id
