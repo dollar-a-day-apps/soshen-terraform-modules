@@ -5,7 +5,7 @@ output "configuration_endpoint_address" {
 
 # Used for read operations (upon failure, a new node will be promoted to primary)
 output "member_clusters" {
-  value = aws_elasticache_cluster.redis.member_clusters
+  value = aws_elasticache_replication_group.redis.member_clusters
 }
 
 output "security_group_id" {
