@@ -40,8 +40,10 @@ resource "aws_lb_target_group" "load_balancer" {
 
   health_check {
     # Service health route for our API app
+    protocol = var.target_group.protocol
     path     = var.target_group.health_check_path
     interval = 60
+    matcher  = 200
   }
 
   lifecycle {
